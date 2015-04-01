@@ -1,0 +1,36 @@
+.carousel.slide {
+	box-shadow: 8px 8px 8px grey;
+}
+
+.carousel-inner {
+	max-height: 600px;
+}
+
+#carouselContainer {
+	margin-bottom: 5em;
+}
+
+.row {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+img.imgHeader {
+	width: 60%;
+	padding-top: 2em;
+	padding-bottom: 2em;
+}
+
+a.thumbnail {
+	margin-bottom: 5em;
+}
+
+.thumbnailContent.lead {
+	margin-bottom: 0;
+	margin-top: 0;
+	color: black;
+}
+
+.hide {
+	display: none;
+}

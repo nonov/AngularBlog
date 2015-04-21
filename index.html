@@ -6,11 +6,19 @@
 	<!-- INCLUDE CUSTOM CSS -->
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 	<!-- INCLUDE BOOSTRAP CSS -->
-	<link rel="stylesheet" type="text/css" href="angular-1.3.15/docs/components/bootstrap-3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css">
+	<!-- INCLUDE JQUERY MIN -->
+	<script type="text/javascript" src="components/jquery/dist/jquery.min.js"></script>
+	<!-- INCLUDE BOOSTRAP MIN -->
+	<script type="text/javascript" src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!-- INCLUDE ANGULARJS MIN -->
+	<script type="text/javascript" src="components/angular/angular.min.js"></script>
+	<!-- INCLUDE CUSTOM JS -->
+	<script type="text/javascript" src="app/app.js"></script>
 </head>
 <body ng-controller="BlogController">
 
-	<div class="container">
+	<div class="container-fluid">
 		<!-- LOGO PART -->
 		<div class="container-fluid">
 			<div class="container">
@@ -34,19 +42,19 @@
 					<div class="item active">
 						<img class="img-responsive" src="images/article1.jpg" alt="Article 1">
 						<div class="carousel-caption">
-							<h3>Article 1</h3>
+							<h3> Article 1 </h3>
 						</div><!-- class carousel-caption -->
 					</div><!-- class item -->
 					<div class="item">
 						<img class="img-responsive" src="images/article2.jpg" alt="Article 2">
 						<div class="carousel-caption">
-							<h3>Article 2</h3>
+							<h3> Article 2 </h3>
 						</div><!-- class carousel-caption -->
 					</div><!-- class item -->
 					<div class="item">
 						<img class="img-responsive" src="images/article3.jpg" alt="Article 3">
 						<div class="carousel-caption">
-							<h3>Article 3</h3>
+							<h3> Article 3 </h3>
 						</div><!-- class carousel-caption -->
 					</div><!-- class item -->
 
@@ -69,10 +77,10 @@
 			<div class="row">
 
 				<!-- Each articles -->
-				<div class="col-md-4" ng-repeat="article in articles">
+				<div class="col-xs-12 col-sm-6 col-md-4" ng-repeat="article in articles">
 					<div class="media">
 						<div class="text-center">
-							<a class="thumbnail" data-toggle="modal" data-target="#myModal" ng-click="doClick(article.id)">
+							<a class="thumbnail" data-toggle="modal" data-target="#articleModal" ng-click="doClick(article.id)">
 								<img class="img-responsive center-block" ng-src="{{article.images[0].url}}" alt="{{article.images[0].alt}}">
 								<div class="caption">
 									<p class="text-center lead thumbnailContent"> {{article.title}} </p>
@@ -88,31 +96,30 @@
 	</div><!-- class container -->
 
 	<!-- MODAL PART -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="articleModal" tabindex="-1" role="dialog" aria-labelledby="articleModal" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 
 				<!-- ARTICLE PART -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">{{currentArticle.title}}</h4>
+					<h4 class="modal-title" id="myModalLabel"> {{currentArticle.title}} </h4>
 				</div><!-- class modal-header -->
 
 				<div class="modal-body">
 					<img class="img-responsive center-block" ng-src="{{currentArticle.images[0].url}}" alt="{{currentArticle.images[0].alt}}">
 					<div class="jumbotron">
-						<p>{{currentArticle.content}}</p>
+						<p> {{currentArticle.content}} </p>
 						<blockquote class="text-right">
-							<cite title="{{currentArticle.author}}">
-								—<em>{{currentArticle.author}}</em>
+							<cite title="{{currentArticle.author}}"><em> — {{currentArticle.author}} </em>
 							</cite>
 						</blockquote>
 					</div><!-- class jumbotron -->
 					
 					<hr>
 					<!-- COMMENTS PART -->
-					<div class="container">
-						<h3><small> Commentaires : </small></h3>
+					<div class="container-fluid">
+						<h3 class="lead"> Commentaires : </h3>
 						<blockquote ng-hide="tabvide" ng-repeat="comment in comments">
 							<strong> {{comment.firstname}} —</strong><cite><em> {{comment.publish_date}} </em></cite>
 							<p> {{comment.content}} </p>
@@ -124,28 +131,71 @@
 
 					<!-- COMMENTS FORM -->
 					<div class="container-fluid jumbotron">
+						
 						<p class="lead"> Qu'avez-vous pensé de cet article ? </p>
-						<form name="postsForm" ng-submit="submit(currentArticle.id)">	
+
+						<form name="postsForm" ng-submit="addPost(currentArticle.id)" novalidate>
+
 							<div class="row">
-								<div class="col-md-4">
-									<div class="form-group">
+
+								<!-- Firstname -->
+								<div class="col-md-5">
+									<div class="form-group has-feedback" ng-class="{'has-success': postsForm.firstname.$valid, 'has-error': !postsForm.firstname.$valid && postsForm.firstname.$dirty}">
+										<div class="input-group">
+											<span class="input-group-addon">
+												<span class="glyphicon glyphicon-hand-right"></span>
+											</span>
+											<input type="text" class="form-control" ng-model="post.firstname" name="firstname" id="Prénom" placeholder="Prénom..." ng-minlength="2" ng-maxlength="60" aria-describedby="firstnameStatus" required>
+										</div><!-- class input-group -->
+										<span class="glyphicon glyphicon-ok form-control-feedback" ng-show="postsForm.firstname.$valid" aria-hidden="true"></span>
+										<span id="firstnameStatus" class="sr-only">(success)</span>
+										<span class="glyphicon glyphicon-remove form-control-feedback" ng-show="!postsForm.firstname.$valid && postsForm.firstname.$dirty" aria-hidden="true"></span>
+										<span id="firstnameStatus" class="sr-only">(warning)</span>
+										<span class="validationError" ng-show="postsForm.firstname.$error.minlength">* The firstname has to be a least 2 characters</span>
+										<span class="validationError" ng-show="postsForm.firstname.$error.maxlength">* The firstname can't be more than 60 characters</span>
+										<span class="validationError" ng-show="postsForm.firstname.$error.required && postsForm.firstname.$dirty">* The firstname is required</span>
+									</div><!-- class form-group -->
+								</div><!-- class col-md-5 -->
+
+								<!-- Email -->
+								<div class="col-md-5">
+									<div class="form-group has-feedback" ng-class="{'has-success': postsForm.email.$valid, 'has-error': postsForm.email.$invalid && postsForm.email.$dirty}">
 										<label class="control-label sr-only" for="Email"> Email </label>
 										<div class="input-group">
-											<span class="input-group-addon glyphicon glyphicon-envelope"></span>
-											<input type="email" class="form-control" ng-model="email" name="email" id="Email" placeholder="Email...">
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<label class="control-label sr-only" for="Prénom"> Prénom </label>
-									<input type="text" class="form-control" ng-model="firstname" name="firstname" id="Prénom" placeholder="Prénom...">
-								</div>
-							</div>
-							<div class="row">
-								<textarea class="form-control" ng-model="message" name="message" rows="3" cols="10" maxlength="200" placeholder="Commentaire..."></textarea>
+											<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+											<input type="email" class="form-control" ng-model="email" name="post.email" id="Email" placeholder="Email..." ng-maxlength="255" aria-describedby="emailStatus" required>
+										</div><!-- class input-group -->
+										<span class="glyphicon glyphicon-ok form-control-feedback" ng-show="postsForm.email.$valid" aria-hidden="true"></span>
+										<span id="emailStatus" class="sr-only">(success)</span>
+										<span class="glyphicon glyphicon-remove form-control-feedback" ng-show="postsForm.email.$invalid && postsForm.email.$dirty" aria-hidden="true"></span>
+										<span id="emailStatus" class="sr-only">(warning)</span>
+										<span class="validationError" ng-show="postsForm.email.$error.required && postsForm.email.$dirty">* The email address is required</span>
+									</div><!-- class form-group -->
+								</div><!-- class col-md-5 -->
+
 							</div><!-- class row -->
-							<button type="submit" id="submit" class="btn btn-default"> Submit </button>
-						</form>
+
+							<div class="row">
+
+								<!-- Message -->
+								<div class="form-group">
+									<label class="control-label sr-only" for="Message"> Message </label>
+									<textarea class="form-control" ng-model="post.message" name="message" rows="6" cols="10" maxlength="300" placeholder="Commentaire..." required></textarea>
+								</div><!-- class form-group -->
+
+							</div><!-- class row -->
+
+							<div class="row">
+
+								<!-- Submit -->
+								<div class="col-md-4">
+									<button class="btn btn-primary" type="submit"> Envoyer </button>
+								</div><!-- class col-md-4 -->
+
+							</div><!-- class row -->
+
+						</form><!-- named postsForm -->
+
 					</div><!-- class container-fluid jumbotron -->
 
 				</div><!-- class modal-body -->
@@ -154,22 +204,103 @@
 	</div><!-- class modal fade -->
 
 	<footer>
+		
 		<div class="row">
-
+			<div class="col-md-12">
+				<p class="pull-right lead"><a type="button" class="btn btn-link" data-toggle="modal" data-target="#connexionModal"> Connexion </a></p>
+				<p class="pull-right lead"><a type="button" class="btn btn-link"> Déconnexion </a></p>
+				<p class="pull-right lead"><a type="button" class="btn btn-link" data-toggle="modal" data-target="#addArticleModal"> Ajouter un article </a></p>
+			</div><!-- class col-md-12 -->
 		</div><!-- class row -->
+
 	</footer>
 
+	<!-- Add article modal -->
+	<div class="modal fade" id="addArticleModal" tabindex="-1" role="login" aria-labelledby="addArticleModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
 
-	<!-- INCLUDE JQUERY MIN -->
-	<script type="text/javascript" src="angular-1.3.15/docs/components/jquery-2.1.1/jquery.min.js"></script>
-	<!-- INCLUDE BOOSTRAP MIN -->
-	<script type="text/javascript" src="angular-1.3.15/docs/components/bootstrap-3.1.1/js/bootstrap.min.js"></script>
-	<!-- INCLUDE ANGULARJS MIN -->
-	<script type="text/javascript" src="angular-1.3.15/angular.min.js"></script>
-	<!-- INCLUDE ANGULARJS MIN MAP 
-	<script type="text/javascript" src="angular-1.3.15/angular.min.js.map"></script>-->
-	<!-- INCLUDE CUSTOM JS -->
-	<script type="text/javascript" src="app/app.js"></script>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h1 class="modal-title" id="addArticleModal"> Ajouter un article </h1>
+				</div><!-- class modal-header -->
+
+				<div class="modal-body">
+					<form novalidate name="addArticleForm" ng-submit="addArticle()">	
+
+						<!-- First & Last Names -->
+						<div class="row">
+							<div class="col-md-6">
+
+								<div class="col-md-8 col-md-offset-2">
+									<div class="form-group">
+										<label class="control-label sr-only" for="title"> Titre </label>
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-text-width"></span></span>
+											<input type="text" class="form-control" ng-model="addArticle.title" name="title" id="title" placeholder="Titre..." required>
+										</div><!-- class input-group -->
+									</div><!-- class form-group -->
+								</div><!-- class col-md-8 col-md-offset-2 -->
+
+								<div class="col-md-8 col-md-offset-2">
+									<div ng-file-drop class="drop-box" ng-file-select ng-model="files" allow-dir="true" accept="image/*,application/pdf">
+										<p class="dropzone lead" drag-over-class="dragover" ng-hide="imgIsEnable"> Drop ou click ! <span class="glyphicon glyphicon-cloud-download"></span></p>
+										<img class="dropImg" ng-show="imgIsEnable" ng-src=""/>
+										<h6 class="text-info" ng-show="imgIsEnable"><em>* Cliquer sur la photo pour la modifier </em></h6>
+									</div>
+								</div><!-- class col-md-8 col-md-offset-2 -->
+
+							</div><!-- class col-md-6 -->
+
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label sr-only" for="content"> Contenu </label>
+									<textarea class="form-control" ng-model="addArticle.content" name="content" rows="17" cols="10" placeholder="Contenu..." required></textarea>
+								</div><!-- class form-group -->
+							</div><!-- class col-md-6 -->
+
+						</div><!-- class row -->
+
+						<!-- Submit -->
+						<div class="row">
+							<div class="col-md-4 col-md-offset-4">
+								<button class="btn btn-primary btn-md" type="submit"> Ajouter </button>
+							</div><!-- class col-md-6 -->
+						</div><!-- class row -->
+
+					</form><!-- named addArticleForm -->
+				</div><!-- class modal-body -->
+
+			</div><!-- class modal-content -->
+		</div><!-- class modal-dialog -->
+	</div><!-- class modal fade -->
+
+	<!-- Login modal -->
+	<div class="modal fade" id="connexionModal" tabindex="-1" role="login" aria-labelledby="connexionModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h1 class="modal-title" id="connexionModal"> Connexion </h1>
+				</div><!-- class modal-header -->
+
+				<div class="modal-body">
+					<form role="login" name="loginForm" ng-submit="login()" novalidate>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Login" ng-model="login" required>
+						</div>
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Password" ng-model="password" required>
+						</div><!-- class form-group -->
+						<button class="btn btn-success hidden-xs" type="submit"> Sign In </button>
+					</form><!-- loginForm -->
+				</div><!-- class modal-body -->
+
+			</div><!-- class modal-content -->
+		</div><!-- class modal-dialog -->
+	</div><!-- class modal fade -->
+
 </body>
 </html><script type="text/javascript">
 $('.carousel').carousel();
